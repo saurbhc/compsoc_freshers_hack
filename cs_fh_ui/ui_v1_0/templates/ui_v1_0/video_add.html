@@ -1,0 +1,103 @@
+<html>
+
+    <head>
+        <title>CompSoc - fresher's hack</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="/">fresher's hack - CrashAndBurn()</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="add">Add YouTube-video-link <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="search">Search your Videos</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="list">My Videos</a>
+                    </li>
+                </ul>
+
+          </div>
+        </nav>
+
+        <div class="jumbotron">
+            <form>
+                <div class="form-group">
+                    <label for="video_link_id">Add a YouTube Video here</label>
+<!--                    <input type="text" name="video_link" class="form-control" id="video_link_id" aria-describedby="videoLinkHelp" placeholder="Get the link from a youtube video, click share -> copy link [Example: https://youtu.be/SgFDWK_sf9c]">-->
+                    <input type="text" name="video_link" class="form-control" id="video_link_id" value="https://youtu.be/SgFDWK_sf9c">
+                </div>
+
+                <button id="add_video_button_id" type="submit" class="btn btn-primary">Add Video for processing</button>
+            </form>
+        </div>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    </body>
+
+    <script>
+
+        $(document).ready(function() {
+
+            $("#add_video_button_id").click(function(event) {
+
+                // cancel default behavior
+                event.preventDefault();
+                console.log("add_video_button_id clicked...");
+
+                let data = JSON.stringify({
+                    youtube_video_url: document.getElementById('video_link_id').value
+                });
+                let url = "video_pre_processing"
+
+                fetch(url, {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response => {
+
+                    let result = response.json();
+                    let status_code = response.status;
+
+                    console.log("result: ", result);
+
+                    if( [200, 201].includes(status_code) ) {} else {
+                        console.log('Error in pre-processing video!');
+                    }
+
+                })
+
+            })
+
+        });
+
+    </script>
+
+</html>
