@@ -73,6 +73,14 @@ public class VideoService {
 		videoRepository.save(video);
 
 	}
+	
+	public void deleteLink(VideoDTO videoDTO) {
+
+		String youtubeVideoLink = videoDTO.getYoutubeVideoLink();
+		transcriptionRepository.deleteTranscriptOfVideo(youtubeVideoLink);
+		videoRepository.deleteByLink(youtubeVideoLink);
+
+	}
 
 	public List<VideoLinkDTO> getAllVideos() {
 

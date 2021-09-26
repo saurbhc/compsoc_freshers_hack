@@ -46,4 +46,10 @@ public class VideoController {
 
 	}
 
+	@PostMapping("/video/delete")
+	public ResponseEntity<String> delete(@RequestBody final VideoDTO videoDTO) {
+		videoService.deleteLink(videoDTO);
+		return new ResponseEntity<>("Video Deleted", HttpStatus.OK);
+
+	}
 }
