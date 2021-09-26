@@ -9,6 +9,39 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <!-- Loader CSS -->
+        <style>
+
+            .loader {
+              border: 16px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 16px solid blue;
+              border-right: 16px solid green;
+              border-bottom: 16px solid red;
+              border-left: 16px solid pink;
+              width: 40px;
+              height: 40px;
+              -webkit-animation: spin 2s linear infinite;
+              animation: spin 2s linear infinite;
+            }
+
+            @-webkit-keyframes spin {
+              0% { -webkit-transform: rotate(0deg); }
+              100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+
+            .jumbotron {
+                padding: 11rem 2rem;
+            }
+
+        </style>
+
     </head>
 
     <body>
@@ -48,6 +81,9 @@
 
                 <button id="word_to_search_button_id" type="submit" class="btn btn-primary">Get me all related videos</button>
             </form>
+
+            <div id="loader_for_add_video"></div>
+
         </div>
 
         <div id="searched_videos_id" class="container">
@@ -71,6 +107,7 @@
                 // cancel default behavior
                 event.preventDefault();
                 console.log("word_to_search_button_id clicked...");
+                document.getElementById('loader_for_add_video').innerHTML = `Please Wait...<div id="add_video_loader" class="loader" style="display: block;"></div>`;
 
                 let data = JSON.stringify({
                     searchString: document.getElementById('word_to_search_id').value
@@ -118,8 +155,7 @@
 
                     }
 
-                    {#searched_videos_id#}
-                    {#<iframe width="300" height="200" src="https://www.youtube.com/embed/wMEq1mGpP5A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+                    document.getElementById('loader_for_add_video').innerHTML = `<div id="add_video_loader" class="loader" style="display: none;"></div>`;
 
                 })
 
