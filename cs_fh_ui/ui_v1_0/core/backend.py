@@ -1,7 +1,7 @@
 import json
 import requests
 
-from .constants import BACKEND_BASE_URL, BACKEND_VIDEO_ADD_URL, BACKEND_VIDEO_SEARCH_URL, BACKEND_VIDEO_LIST_URL
+from .constants import BACKEND_BASE_URL, BACKEND_VIDEO_ADD_URL, BACKEND_VIDEO_SEARCH_URL, BACKEND_VIDEO_LIST_URL, BACKEND_VIDEO_DELETE_URL
 
 
 def hit_add_video(youtube_video_url, gcp_uri):
@@ -40,5 +40,19 @@ def hit_list_video():
     }
 
     response = requests.request("GET", backend_url, headers=headers)
+
+    return response
+
+
+def hit_delete_video(youtube_video_link):
+    backend_url = BACKEND_BASE_URL + BACKEND_VIDEO_DELETE_URL
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    payload = json.dumps({
+        "youtubeVideoLink": youtube_video_link
+    })
+
+    response = requests.request("POST", backend_url, headers=headers, data=payload)
 
     return response

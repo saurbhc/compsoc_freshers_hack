@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from google.cloud import storage
 
-from .core.backend import hit_add_video, hit_search_video, hit_list_video
+from .core.backend import hit_add_video, hit_search_video, hit_list_video, hit_delete_video
 from .core.constants import GCP_BUCKET_NAME, GCP_PROJECT_NAME, \
     GCP_CREDENTIALS_FILE_NAME, LOCAL_YOUTUBE_DOWNLOADS_PATH
 from .core.gcp import get_gcp_uri
@@ -121,6 +121,21 @@ def video_list(request):
 
     print("sharing with Backend...")
     response = hit_list_video()
+    print("status_code: ", response.status_code)
+    print("response.text: ", response.text)
+
+    return HttpResponse(response.text, status=201)
+
+
+@csrf_exempt
+def video_delete(request):
+    print("video delete requested...")
+
+    request_data = json.loads(request.body)
+    youtube_video_link = request_data.get('youtubeVideoLink')
+
+    print("sharing with Backend...")
+    response = hit_delete_video(youtube_video_link)
     print("status_code: ", response.status_code)
     print("response.text: ", response.text)
 

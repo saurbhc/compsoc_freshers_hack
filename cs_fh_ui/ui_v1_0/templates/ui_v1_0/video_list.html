@@ -65,7 +65,7 @@
                     </li>
 
                     <li class="nav-item active">
-                        <a class="nav-link" href="list">My Videos <span class="sr-only">(current)</span></a>
+                        <a id="my_videos_nav_id" class="nav-link" href="list">My Videos <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
 
@@ -74,9 +74,9 @@
 
          <div class="jumbotron">
              <h2>My Videos</h2><br>
+             <div id="loader_for_add_video"></div>
             <div id="my_videos_id" class="container">
             </div>
-             <div id="loader_for_add_video"></div>
         </div>
 
         <!-- Optional JavaScript -->
@@ -88,6 +88,36 @@
     </body>
 
     <script>
+
+        function delete_video(video_link) {
+
+            console.log("delete video button clicked...");
+            document.getElementById('loader_for_add_video').innerHTML = `Deleting, Please Wait...<div id="add_video_loader" class="loader" style="display: block;"></div>`;
+
+            let url = "video_delete"
+            let data = JSON.stringify({
+                youtubeVideoLink: video_link
+            });
+
+            fetch(url, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => {
+
+                console.log("data for delete video: ", response);
+
+                document.getElementById('loader_for_add_video').innerHTML = `<div id="add_video_loader" class="loader" style="display: none;"></div>`;
+
+                let my_videos_nav_button = document.getElementById("my_videos_nav_id");
+                my_videos_nav_button.click(); // this will trigger the click event#
+
+            })
+
+        }
 
         $(document).ready(function() {
 
@@ -113,6 +143,7 @@
                     const video_div = document.createElement('div');
                     let id = "video_id_" + video_index;
                     let div_inner_html_video = `    <a href="${video_link}" id="${id}">${video_name}</a>`;
+                    let div_inner_html_video_delete = `    <div><button id='${video_link}' class="delete_video" onClick="delete_video('${video_link}')" type="submit" class="btn btn-danger">DELETE</button></div>`;
                     let div_inner_html_seconds_videos = ``
                     video_link = video_link.replace("youtu.be/", "www.youtube.com/embed/");
                     video_link = video_link.replace("?t=", "?start=");
@@ -120,7 +151,7 @@
                     div_inner_html_seconds_videos += iframe_link_html;
 
                     video_div.innerHTML = `
-                        ${div_inner_html_video} <br>
+                        ${div_inner_html_video} ${div_inner_html_video_delete}<br>
                         ${div_inner_html_seconds_videos}
                     `;
                     document.getElementById('my_videos_id').appendChild(video_div);
