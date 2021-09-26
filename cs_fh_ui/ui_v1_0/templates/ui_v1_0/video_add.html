@@ -9,6 +9,39 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <!-- Loader CSS -->
+        <style>
+
+            .loader {
+              border: 16px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 16px solid blue;
+              border-right: 16px solid green;
+              border-bottom: 16px solid red;
+              border-left: 16px solid pink;
+              width: 40px;
+              height: 40px;
+              -webkit-animation: spin 2s linear infinite;
+              animation: spin 2s linear infinite;
+            }
+
+            @-webkit-keyframes spin {
+              0% { -webkit-transform: rotate(0deg); }
+              100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+
+            .jumbotron {
+                padding: 11rem 2rem;
+            }
+
+        </style>
+
     </head>
 
     <body>
@@ -40,7 +73,7 @@
         </nav>
 
         <div class="jumbotron">
-            <form>
+            <form class="form-horizontal">
                 <div class="form-group">
                     <label for="video_link_id">Add a YouTube Video here</label>
                     <input type="text" name="video_link" class="form-control" id="video_link_id" value="https://youtu.be/wMEq1mGpP5A">
@@ -48,6 +81,8 @@
 
                 <button id="add_video_button_id" type="submit" class="btn btn-primary">Add Video for processing</button>
             </form>
+
+            <div id="loader_for_add_video"></div>
         </div>
 
         <!-- Optional JavaScript -->
@@ -67,6 +102,7 @@
                 // cancel default behavior
                 event.preventDefault();
                 console.log("add_video_button_id clicked...");
+                document.getElementById('loader_for_add_video').innerHTML = `Please Wait...<div id="add_video_loader" class="loader" style="display: block;"></div>`;
 
                 let data = JSON.stringify({
                     youtube_video_url: document.getElementById('video_link_id').value
@@ -90,6 +126,7 @@
                     if( [200, 201].includes(status_code) ) {} else {
                         console.log('Error in pre-processing video!');
                     }
+                    document.getElementById('loader_for_add_video').innerHTML = `<div id="add_video_loader" class="loader" style="display: none;"></div>`;
 
                 })
 
