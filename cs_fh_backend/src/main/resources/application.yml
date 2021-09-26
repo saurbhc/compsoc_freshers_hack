@@ -1,0 +1,37 @@
+spring:
+ datasource:
+   driver-class-name: org.postgresql.Driver
+   username: ${postgres.username}
+   password: ${postgres.password}
+   url: jdbc:postgresql://${postgres.ip}:${postgres.port}/
+   maximum-pool-size: 5
+   connection-timeout: 10000
+   idle-timeout: 300000
+   minimum-idle: 2
+   max-lifetime: 7200000
+   cachePrepStmts: true
+   prepStmtCacheSize: 250
+   prepStmtCacheSqlLimit: 2048
+   useServerPrepStmts: true
+   use_jdbc_metadata_defaults: false
+   
+jpa:
+  properties:
+   hibernate:
+    jdbc:
+     batch_size: 5000
+    order_inserts: true
+    order_updates: true
+    generate_statistics: true
+
+data:
+  jpa:
+   repositories:
+    enabled: true
+    
+hibernate:
+ dialect: org.hibernate.dialect.PostgreSQLDialect
+ format_sql: false
+ show_sql: false
+ 
+googleCredentialsFilePath: ${googleCloudCredentialFilePath}

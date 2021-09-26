@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: video-service
+  main:
+   allow-bean-definition-overriding: true
+  config:
+   location: ${projectPath}/src/main/resources/application.yml
+      
+server:
+  port: 8306
+  servlet:
+   context-path: /video-service
+info:
+  version: '@project.version@'
+  Description: '@project.description@'
+  Name : '@project.name@'
+  ArtifactId: '@project.artifactId@'
+  GroupId: '@project.groupId@'  
