@@ -7,11 +7,11 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from google.cloud import storage
 
+from .core.backend import hit_add_video, hit_search_video, hit_list_video
 from .core.constants import GCP_BUCKET_NAME, GCP_PROJECT_NAME, \
     GCP_CREDENTIALS_FILE_NAME, LOCAL_YOUTUBE_DOWNLOADS_PATH
 from .core.gcp import get_gcp_uri
 from .core.os_cmd import get_ffmpeg_cmd, get_pending_video_path
-from .core.backend import hit_add_video
 
 MAIN_REPOSITORY_PATH = path.abspath(path.join(__file__, "../../../"))
 GCP_CREDENTIALS_FILE_NAME_FULL_PATH = MAIN_REPOSITORY_PATH + GCP_CREDENTIALS_FILE_NAME
@@ -26,19 +26,19 @@ def homepage(request):
 def videos_add(request):
     print("videos_add requested...")
     context = {}
-    return render(request, "ui_v1_0/video_add.html")
+    return render(request, "ui_v1_0/video_add.html", context)
 
 
 def videos_search(request):
     print("videos_search requested...")
     context = {}
-    return render(request, "ui_v1_0/video_search.html")
+    return render(request, "ui_v1_0/video_search.html", context)
 
 
 def videos_list(request):
     print("videos_list requested...")
     context = {}
-    return render(request, "ui_v1_0/video_list.html")
+    return render(request, "ui_v1_0/video_list.html", context)
 
 
 @csrf_exempt
@@ -71,7 +71,7 @@ def video_pre_processing(request):
     blob.upload_from_filename(audio_file_path)
     gcp_public_url = blob.public_url
     print("uploaded file public_url: ", gcp_public_url)
-    gcp_uri = get_gcp_uri(GCP_BUCKET_NAME, youtube_title)
+    gcp_uri = get_gcp_uri(GCP_BUCKET_NAME, blob.name)
 
     print("deleting video and audio...")
     remove(audio_file_path)
@@ -97,3 +97,31 @@ def video_pre_processing(request):
             )
 
     return HttpResponse(request, status=201)
+
+
+@csrf_exempt
+def video_search(request):
+    print("video_search requested...")
+
+    request_data = json.loads(request.body)
+    search_string = request_data.get('searchString')
+
+    print("sharing with Backend...")
+    print("search_string: ", search_string)
+    response = hit_search_video(search_string)
+    print("status_code: ", response.status_code)
+    print("response.text: ", response.text)
+
+    return HttpResponse(response.text, status=201)
+
+
+@csrf_exempt
+def video_list(request):
+    print("video list requested...")
+
+    print("sharing with Backend...")
+    response = hit_list_video()
+    print("status_code: ", response.status_code)
+    print("response.text: ", response.text)
+
+    return HttpResponse(response.text, status=201)

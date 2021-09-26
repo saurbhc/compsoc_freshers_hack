@@ -43,11 +43,15 @@
             <form>
                 <div class="form-group">
                     <label for="word_to_search_id">Search any-word in your-videos</label>
-                    <input class="form-control" id="word_to_search_id" aria-describedby="videoLinkHelp" placeholder="Search for any word. [Example: heisenberg]">
+                    <input type="text" name="word_to_search" class="form-control" id="word_to_search_id" value="danger">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Get me all related videos</button>
+                <button id="word_to_search_button_id" type="submit" class="btn btn-primary">Get me all related videos</button>
             </form>
+        </div>
+
+        <div id="searched_videos_id" class="container">
+
         </div>
 
         <!-- Optional JavaScript -->
@@ -57,4 +61,72 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     </body>
+
+    <script>
+
+        $(document).ready(function() {
+
+            $("#word_to_search_button_id").click(function(event) {
+
+                // cancel default behavior
+                event.preventDefault();
+                console.log("word_to_search_button_id clicked...");
+
+                let data = JSON.stringify({
+                    searchString: document.getElementById('word_to_search_id').value
+                });
+                let url = "video_search"
+
+                fetch(url, {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('searched_videos_id').innerHTML = "";
+                    for (let video_index in data) {
+                        let video_data = data[video_index];
+                        let video_link = video_data["videoLink"];
+                        let video_name = video_data["videoName"];
+                        let video_seconds_links = video_data["videoSecondsLinks"];
+                        console.log("video_link: ", video_link);
+                        console.log("video_seconds_links: ", video_seconds_links);
+
+                        const video_div = document.createElement('div');
+                        let id = "video_id_" + video_index;
+                        let div_inner_html_video = `    <a href="${video_link}" id="${id}">${video_name}</a>`;
+                        let div_inner_html_seconds_videos = `<ol>`
+                        for (let video_seconds_link_index in video_seconds_links) {
+                            let video_seconds_link_dict = video_seconds_links[video_seconds_link_index];
+                            let transcription = video_seconds_link_dict["transcription"];
+                            let video_seconds_link = video_seconds_link_dict["link"];
+                            video_seconds_link = video_seconds_link.replace("youtu.be/", "www.youtube.com/embed/");
+                            video_seconds_link = video_seconds_link.replace("?t=", "?start=");
+                            let iframe_link_html = `<li><p><b>Context: </b>${transcription}</p><iframe width="560" height="315" src="${video_seconds_link}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br></li><br>`
+                            div_inner_html_seconds_videos += iframe_link_html;
+                        }
+                        div_inner_html_seconds_videos += `</ol>`;
+                        video_div.innerHTML = `
+                            ${div_inner_html_video} <br>
+                            ${div_inner_html_seconds_videos}
+                        `;
+                        document.getElementById('searched_videos_id').appendChild(video_div);
+                        console.log("video_div: ", video_div);
+
+                    }
+
+                    {#searched_videos_id#}
+                    {#<iframe width="300" height="200" src="https://www.youtube.com/embed/wMEq1mGpP5A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+
+                })
+
+            })
+
+        });
+
+    </script>
+
 </html>

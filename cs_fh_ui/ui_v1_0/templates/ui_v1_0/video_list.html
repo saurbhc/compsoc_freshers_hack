@@ -40,11 +40,9 @@
         </nav>
 
          <div class="jumbotron">
-            <form>
-                <div class="form-group">
-                    <p>Your Videos:</p>
-                </div>
-            </form>
+            <p>Your Videos:</p>
+            <div id="my_videos_id" class="container">
+            </div>
         </div>
 
         <!-- Optional JavaScript -->
@@ -54,4 +52,51 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     </body>
+
+    <script>
+
+        $(document).ready(function() {
+
+            let url = "video_list"
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            }).then(response => response.json())
+            .then(data => {
+                document.getElementById('my_videos_id').innerHTML = "";
+                for (let video_index in data) {
+                    let video_data = data[video_index];
+                    let video_name = video_data["youtubeVideoName"];
+                    let video_link = video_data["youtubeVideoLink"];
+                    console.log("video_link: ", video_link);
+                    console.log("video_name: ", video_name);
+
+                    const video_div = document.createElement('div');
+                    let id = "video_id_" + video_index;
+                    let div_inner_html_video = `    <a href="${video_link}" id="${id}">${video_name}</a>`;
+                    let div_inner_html_seconds_videos = ``
+                    video_link = video_link.replace("youtu.be/", "www.youtube.com/embed/");
+                    video_link = video_link.replace("?t=", "?start=");
+                    let iframe_link_html = `<iframe width="560" height="315" src="${video_link}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>`
+                    div_inner_html_seconds_videos += iframe_link_html;
+
+                    video_div.innerHTML = `
+                        ${div_inner_html_video} <br>
+                        ${div_inner_html_seconds_videos}
+                    `;
+                    document.getElementById('my_videos_id').appendChild(video_div);
+                    console.log("video_div: ", video_div);
+
+                }
+
+            })
+
+        });
+
+    </script>
+
 </html>

@@ -1,5 +1,7 @@
-BACKEND_BASE_URL = "http://localhost:8080/"
-BACKEND_VIDEO_ADD_URL = "video"
+BACKEND_BASE_URL = "http://bfbe-134-219-227-34.ngrok.io"
+BACKEND_VIDEO_ADD_URL = "/video"
+BACKEND_VIDEO_SEARCH_URL = "/video/search"
+BACKEND_VIDEO_LIST_URL = "/video/list"
 
 GCP_BUCKET_NAME = "cs-fh-videos"
 GCP_PROJECT_NAME = "freshers-hack-compsoc-rhul"
